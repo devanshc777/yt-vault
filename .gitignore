@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# yt-vault: generated transcript notes are user data (keep the folder, not the contents)
+library/*.md
+library/INDEX.md
+!library/.gitkeep
+
+# logs / OS
+*.log
+.DS_Store
+Thumbs.db

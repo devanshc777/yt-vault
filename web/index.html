@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>yt-vault · your YouTube, as text you can read</title>
+  <link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+  <div class="lamp" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      yt<span class="brand-dim">·</span>vault
+    </a>
+    <div class="topbar-actions">
+      <span class="hint">plug a link in, get it as text you can actually read</span>
+      <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle light / dark">
+        <span class="theme-dot"></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PLUG -->
+    <section class="plug" aria-labelledby="plug-title">
+      <h1 id="plug-title">Your YouTube, as text you can read.</h1>
+      <p class="plug-sub">Drop a video link. Get a clean transcript and full metadata, saved to your reading room and ready to hand to an AI.</p>
+      <form id="fetchForm" class="plug-form" autocomplete="off">
+        <input id="urlInput" type="url" name="url" inputmode="url"
+               placeholder="https://youtube.com/watch?v=…" aria-label="YouTube URL" required>
+        <button id="fetchBtn" type="submit">Get transcript</button>
+      </form>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- READ ROOM -->
+    <section class="room" aria-label="Reading room">
+      <aside class="shelf">
+        <div class="shelf-head">
+          <h2>Reading room</h2>
+          <span id="count" class="count">0</span>
+        </div>
+        <input id="filter" class="filter" type="search" placeholder="Filter by title or channel" aria-label="Filter transcripts">
+        <ol id="list" class="list" aria-label="Saved transcripts"></ol>
+        <p id="shelfEmpty" class="shelf-empty">Nothing here yet. Plug a link in above.</p>
+      </aside>
+
+      <article id="reader" class="reader" tabindex="-1">
+        <div id="readerEmpty" class="reader-empty">
+          <span class="reader-empty-mark" aria-hidden="true"></span>
+          <p>Pick a transcript from the left, or fetch a new one.</p>
+          <p class="reader-empty-soft">Everything lands as a markdown file in your vault too.</p>
+        </div>
+        <div id="readerBody" class="reader-body" hidden></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/web/app.js" defer></script>
+</body>
+</html>
