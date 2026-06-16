@@ -32,8 +32,8 @@ two calm places to use it: a clean **getter** and a **reading room** you can mak
 ## Features
 
 - **Two pages, one job each** — a focused link-to-transcript getter, and a separate reading room.
-- **Reading room scenes** — Lamplit, Paper, Rain, Library, Dusk, Forest, or **Blank** (upload your own background). Inspired by virtual study spaces like LifeAt.
-- **Focus widgets** (draggable, toggle on/off, remembered): a **clock** with timezone picker, a **pomodoro timer**, and a **life / year progress** meter.
+- **Lived-in rooms** — Library, Café, Rainy window, Lofi desk, Garden, Dusk, Paper, or **Your room** (upload your own). Drop a real photo at `web/rooms/<id>.jpg` to make any room photographic (see [docs/ROOMS.md](docs/ROOMS.md) for ready-to-use image prompts). Inspired by virtual study spaces like LifeAt and "I miss my…".
+- **Focus widgets** that stay out of your way: a **clock** with timezone picker, a **pomodoro timer**, and a **life / year progress** meter. Each lives as a small chip; tap to expand it into a clean full-screen panel; it auto-collapses while you read so the room stays calm.
 - **Real reading typography** — serif body, ~64ch measure, generous leading, warm dark or paper light.
 - **CLI too** — search, fetch, and bulk-grab from the terminal.
 
@@ -55,14 +55,14 @@ That's it. Everything you fetch is saved under `library/` as markdown.
 
 | Control | What it does |
 |---|---|
-| **Scenes** (palette icon) | Switch the room's mood, or upload your own background under **Blank**. |
+| **Rooms** (house icon) | Switch rooms, or upload your own under **Your room**. |
 | **Transcripts** (book icon) | Open the shelf to pick what to read. |
-| **Clock** | Live time; pick a timezone or use this device's. |
-| **Timer** | Pomodoro focus / break. Drag it anywhere. |
-| **Life** | Set your birth date to see the year and your life as progress bars. |
+| **+ Clock / Timer / Life** | Add a widget. It appears as a chip top-right; tap to expand, tap the – to collapse. |
 | **Theme dot** (top right) | Toggle warm-dark / paper. |
 
-Widgets are draggable and their position, your scene, and your settings persist in the browser.
+Your room, active widgets, timezone, and life settings persist in the browser. While you read,
+the dock and top bar fade and any open widget collapses back to its chip; move the pointer to bring
+them back.
 
 ## CLI
 

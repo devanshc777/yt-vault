@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark" data-scene="lamplit">
+<html lang="en" data-theme="dark" data-scene="library">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +8,17 @@
   <link rel="stylesheet" href="/web/read.css">
 </head>
 <body>
-  <!-- scene background -->
+  <!-- scene -->
   <div id="scene" class="scene" aria-hidden="true">
-    <div class="scene-grain"></div>
+    <img id="roomImg" class="room-img" alt="">
+    <div class="scene-tint"></div>
+    <div class="scene-scrim"></div>
     <div class="scene-rain"></div>
-    <div class="scene-dust"></div>
-    <img id="customBg" class="scene-custom" alt="" hidden>
+    <div class="grain"></div>
   </div>
 
-  <header class="topbar glass-bar">
+  <!-- top bar -->
+  <header class="topbar chrome">
     <a class="brand" href="/"><span class="brand-mark"></span>yt<span class="brand-dim">·</span>vault</a>
     <nav class="nav">
       <a class="nav-link" href="/">Get transcript</a>
@@ -26,36 +28,75 @@
   </header>
 
   <!-- left dock -->
-  <aside class="dock" aria-label="Reading room controls">
-    <button class="dock-btn" data-pop="scenes" title="Scenes" aria-label="Scenes">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18c1.7 0 1.7-2 0-2.5s-1.5-2.5 0-3 3 .5 3-2-2.5-2-1.5-4 1.2-3.2-.5-4.5z"/></svg>
+  <aside class="dock chrome" aria-label="Controls">
+    <button class="dock-btn" data-pop="scenes" title="Rooms" aria-label="Choose room">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-5h5v5"/></svg>
     </button>
     <button class="dock-btn" data-widget="library" title="Transcripts" aria-label="Transcripts">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h11v15H6a2 2 0 0 1-2-2z"/><path d="M15 5h5v13a2 2 0 0 1-2 2h-3z"/><path d="M8 9h4M8 13h4"/></svg>
     </button>
-    <button class="dock-btn" data-widget="clock" title="Clock" aria-label="Clock">
+    <div class="dock-sep"></div>
+    <button class="dock-btn" data-add="clock" title="Clock" aria-label="Clock">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
     </button>
-    <button class="dock-btn" data-widget="timer" title="Timer" aria-label="Pomodoro timer">
+    <button class="dock-btn" data-add="timer" title="Timer" aria-label="Timer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 2h4"/><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/></svg>
     </button>
-    <button class="dock-btn" data-widget="life" title="Life in progress" aria-label="Life progress">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h7l1.5-4 3 8L16 12h5"/></svg>
+    <button class="dock-btn" data-add="life" title="Life" aria-label="Life progress">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h6l1.5-5 3 10L16 12h5"/></svg>
     </button>
   </aside>
 
-  <!-- scenes popover -->
-  <div id="scenesPop" class="pop" hidden role="dialog" aria-label="Choose a scene">
-    <p class="pop-title">Choose your room</p>
-    <div class="scene-grid" id="sceneGrid"></div>
-    <label class="upload">
-      <input id="bgUpload" type="file" accept="image/*" hidden>
-      <span>Upload your own background</span>
-    </label>
+  <!-- widget chips (built by JS) -->
+  <div id="rail" class="rail" aria-label="Active widgets"></div>
+
+  <!-- expandable widget stage (one at a time) -->
+  <div id="stage" class="stage" hidden>
+    <!-- clock -->
+    <section class="panel" data-w="clock" hidden>
+      <button class="panel-x" data-collapse aria-label="Collapse">–</button>
+      <div class="clock-time" id="clockTime">--:--</div>
+      <div class="clock-date" id="clockDate"></div>
+      <select id="clockTz" class="pill-select" aria-label="Timezone"></select>
+    </section>
+    <!-- timer -->
+    <section class="panel" data-w="timer" hidden>
+      <button class="panel-x" data-collapse aria-label="Collapse">–</button>
+      <div class="seg">
+        <button class="seg-btn active" data-min="25" data-mode="focus">pomodoro</button>
+        <button class="seg-btn" data-min="5" data-mode="short">short break</button>
+        <button class="seg-btn" data-min="15" data-mode="long">long break</button>
+      </div>
+      <div class="timer-time" id="timerTime">25:00</div>
+      <div class="timer-row">
+        <button class="pill-lg" id="timerToggle">start</button>
+        <button class="round-btn" id="timerReset" aria-label="Reset">↺</button>
+      </div>
+    </section>
+    <!-- life -->
+    <section class="panel" data-w="life" hidden>
+      <button class="panel-x" data-collapse aria-label="Collapse">–</button>
+      <p class="panel-label">Time, honestly</p>
+      <div class="bar-row"><span>This year</span><b id="yearPct">—</b></div>
+      <div class="bar"><i id="yearBar"></i></div>
+      <div class="bar-row"><span>Life</span><b id="lifePct">—</b></div>
+      <div class="bar"><i id="lifeBar"></i></div>
+      <div class="life-inputs">
+        <input id="birth" type="date" aria-label="Birth date">
+        <input id="expectancy" type="number" min="40" max="120" value="80" aria-label="Life expectancy">
+      </div>
+    </section>
   </div>
 
-  <!-- shelf (transcript list) -->
-  <aside id="shelf" class="shelf glass" aria-label="Saved transcripts" hidden>
+  <!-- scenes popover -->
+  <div id="scenesPop" class="pop chrome" hidden role="dialog" aria-label="Choose a room">
+    <p class="pop-title">Choose your room</p>
+    <div class="room-grid" id="roomGrid"></div>
+    <label class="upload"><input id="bgUpload" type="file" accept="image/*" hidden><span>Upload your own room</span></label>
+  </div>
+
+  <!-- shelf -->
+  <aside id="shelf" class="shelf glass" aria-label="Transcripts" hidden>
     <div class="shelf-head"><h2>Transcripts</h2><button class="x" id="shelfClose" aria-label="Close">×</button></div>
     <input id="filter" class="filter" type="search" placeholder="Filter by title or channel" aria-label="Filter">
     <ol id="list" class="list"></ol>
@@ -67,46 +108,12 @@
     <article id="reader" class="reader glass" tabindex="-1">
       <div id="readerEmpty" class="reader-empty">
         <span class="ember"></span>
-        <p>Pick something to read.</p>
-        <button class="ghost-btn" id="openShelf">Browse transcripts</button>
+        <p>Settle in. Pick something to read.</p>
+        <button class="pill" id="openShelf">Browse transcripts</button>
       </div>
       <div id="readerBody" class="reader-body" hidden></div>
     </article>
   </main>
-
-  <!-- widgets -->
-  <section id="w-clock" class="widget glass" data-w="clock" hidden>
-    <div class="widget-grip" data-grip></div>
-    <div class="clock-time" id="clockTime">--:--</div>
-    <div class="clock-date" id="clockDate"></div>
-    <select id="clockTz" class="mini-select" aria-label="Timezone"></select>
-  </section>
-
-  <section id="w-timer" class="widget glass" data-w="timer" hidden>
-    <div class="widget-grip" data-grip></div>
-    <div class="timer-modes">
-      <button class="chip active" data-mode="focus" data-min="25">Focus</button>
-      <button class="chip" data-mode="break" data-min="5">Break</button>
-    </div>
-    <div class="timer-time" id="timerTime">25:00</div>
-    <div class="timer-actions">
-      <button class="ghost-btn" id="timerToggle">Start</button>
-      <button class="ghost-btn" id="timerReset">Reset</button>
-    </div>
-  </section>
-
-  <section id="w-life" class="widget glass" data-w="life" hidden>
-    <div class="widget-grip" data-grip></div>
-    <p class="widget-label">Time, honestly</p>
-    <div class="bar-row"><span>This year</span><span id="yearPct">—</span></div>
-    <div class="bar"><i id="yearBar"></i></div>
-    <div class="bar-row"><span>Life</span><span id="lifePct">—</span></div>
-    <div class="bar"><i id="lifeBar"></i></div>
-    <div class="life-inputs">
-      <input id="birth" type="date" aria-label="Birth date">
-      <input id="expectancy" type="number" min="40" max="120" value="80" aria-label="Life expectancy">
-    </div>
-  </section>
 
   <script src="/web/read.js" defer></script>
 </body>

@@ -11,19 +11,25 @@
 .ghost-btn:hover { border-color: var(--accent); color: var(--ink); }
 .ghost-btn:active { transform: translateY(1px); }
 
-/* drifting aurora orbs */
-.aurora { position: fixed; inset: 0; z-index: var(--z-bg); overflow: hidden; pointer-events: none; }
-.aurora span {
-  position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5;
-  background: radial-gradient(circle, var(--accent), transparent 70%);
-}
-.aurora span:nth-child(1) { width: 46vw; height: 46vw; top: -14vw; left: 50%; transform: translateX(-50%); opacity: 0.32; animation: drift1 22s var(--ease) infinite alternate; }
-.aurora span:nth-child(2) { width: 30vw; height: 30vw; bottom: -8vw; left: -6vw; background: radial-gradient(circle, var(--accent-2), transparent 70%); opacity: 0.22; animation: drift2 26s var(--ease) infinite alternate; }
-.aurora span:nth-child(3) { width: 24vw; height: 24vw; top: 30%; right: -6vw; opacity: 0.16; animation: drift3 30s var(--ease) infinite alternate; }
-@keyframes drift1 { to { transform: translateX(-58%) translateY(4vw); } }
-@keyframes drift2 { to { transform: translate(5vw, -4vw); } }
-@keyframes drift3 { to { transform: translate(-4vw, 5vw); } }
-[data-theme="light"] .aurora span { opacity: 0.14; }
+/* fluid mesh gradient — soft blended color field (shader-ish), not cut-and-dry */
+.mesh { position: fixed; inset: -10%; z-index: var(--z-bg); overflow: hidden; pointer-events: none; filter: blur(8px) saturate(125%); }
+.mesh span { position: absolute; border-radius: 50%; filter: blur(60px); mix-blend-mode: screen; will-change: transform; }
+.mesh span:nth-child(1) { width: 60vw; height: 60vw; top: -18vw; left: 8vw;  background: radial-gradient(circle, oklch(0.78 0.14 62 / 0.55), transparent 68%); animation: m1 26s var(--ease) infinite alternate; }
+.mesh span:nth-child(2) { width: 52vw; height: 52vw; top: -8vw;  right: -6vw; background: radial-gradient(circle, oklch(0.70 0.15 38 / 0.50), transparent 68%); animation: m2 31s var(--ease) infinite alternate; }
+.mesh span:nth-child(3) { width: 46vw; height: 46vw; bottom: -16vw; left: -8vw; background: radial-gradient(circle, oklch(0.62 0.13 24 / 0.45), transparent 70%); animation: m3 29s var(--ease) infinite alternate; }
+.mesh span:nth-child(4) { width: 40vw; height: 40vw; bottom: -10vw; right: 10vw; background: radial-gradient(circle, oklch(0.66 0.12 90 / 0.40), transparent 70%); animation: m4 35s var(--ease) infinite alternate; }
+.mesh span:nth-child(5) { width: 34vw; height: 34vw; top: 32%; left: 38%; background: radial-gradient(circle, oklch(0.58 0.14 330 / 0.30), transparent 72%); animation: m5 38s var(--ease) infinite alternate; }
+@keyframes m1 { to { transform: translate(6vw, 7vw) scale(1.15); } }
+@keyframes m2 { to { transform: translate(-7vw, 5vw) scale(1.1); } }
+@keyframes m3 { to { transform: translate(8vw, -5vw) scale(1.18); } }
+@keyframes m4 { to { transform: translate(-6vw, -6vw) scale(1.12); } }
+@keyframes m5 { to { transform: translate(-4vw, 4vw) scale(1.22); } }
+[data-theme="light"] .mesh { filter: blur(8px) saturate(115%); opacity: 0.6; }
+[data-theme="light"] .mesh span { mix-blend-mode: multiply; }
+
+/* fine grain over the mesh for a filmic, non-flat field */
+.grain { position: fixed; inset: 0; z-index: var(--z-bg); pointer-events: none; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
 main { position: relative; z-index: var(--z-base); max-width: 1080px; margin: 0 auto; padding: clamp(2.6rem, 8vw, 6rem) clamp(1.1rem, 4vw, 2.6rem) 3rem; }
 
