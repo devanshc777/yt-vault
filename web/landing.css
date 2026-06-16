@@ -27,6 +27,11 @@ body.noir {
 .orb { position: relative; width: min(42vw, 460px); aspect-ratio: 1; justify-self: center; }
 @media (max-width: 900px) { .orb { width: min(72vw, 340px); } }
 
+/* drop a generated image at web/assets/orb.(png|webp|jpg) → it replaces the CSS orb */
+.orb-img { position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: contain; opacity: 0; transition: opacity 0.8s var(--ease); filter: drop-shadow(0 0 60px oklch(0.7 0.12 280 / 0.4)); }
+.orb.has-img .orb-img { opacity: 1; }
+.orb.has-img .ring, .orb.has-img .ring-2, .orb.has-img .hex, .orb.has-img .orb-glow { display: none; }
+
 .orb-glow { position: absolute; inset: 8%; border-radius: 50%; filter: blur(46px); opacity: 0.6;
   background: conic-gradient(from 0deg, #7df9ff, #c39bff, #ff9bd4, #ffe79b, #9bffc0, #7df9ff);
   animation: hue 18s linear infinite; }

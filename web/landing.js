@@ -41,6 +41,15 @@ function showResult(d) {
   r.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+/* optional: use a generated hero image if one exists at web/assets/orb.* */
+(function loadOrb() {
+  const orb = $("#orb"), img = $("#orbImg");
+  const tries = ["/web/assets/orb.png", "/web/assets/orb.webp", "/web/assets/orb.jpg"];
+  let i = 0;
+  const next = () => { if (i >= tries.length) return; img.onload = () => orb.classList.add("has-img"); img.onerror = () => { i++; next(); }; img.src = tries[i]; };
+  next();
+})();
+
 $("#fetchForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const url = $("#urlInput").value.trim(); if (!url) return;

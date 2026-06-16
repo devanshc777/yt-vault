@@ -18,3 +18,8 @@ library/INDEX.md
 *.log
 .DS_Store
 Thumbs.db
+
+# user-supplied media (keep folders, not contents)
+web/rooms/*
+!web/rooms/.gitkeep
+web/assets/orb.*

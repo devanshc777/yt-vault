@@ -32,7 +32,7 @@ two calm places to use it: a clean **getter** and a **reading room** you can mak
 ## Features
 
 - **Two pages, one job each** — a focused link-to-transcript getter, and a separate reading room.
-- **Lived-in rooms** — Library, Café, Rainy window, Lofi desk, Garden, Dusk, Paper, or **Your room** (upload your own). Drop a real photo at `web/rooms/<id>.jpg` to make any room photographic (see [docs/ROOMS.md](docs/ROOMS.md) for ready-to-use image prompts). Inspired by virtual study spaces like LifeAt and "I miss my…".
+- **Lived-in rooms** — Library, Café, Rainy window, Lofi desk, Garden, Dusk, Paper, or **Your room** (upload your own). Drop a real photo at `web/rooms/<id>.jpg` to make any room photographic, and drop a hero image at `web/assets/orb.png` for the landing (see [docs/ASSETS.md](docs/ASSETS.md) for reference sources + ready-to-paste image prompts). Inspired by virtual study spaces like LifeAt and "I miss my…".
 - **Focus widgets** that stay out of your way: a **clock** with timezone picker, a **pomodoro timer**, and a **life / year progress** meter. Each lives as a small chip; tap to expand it into a clean full-screen panel; it auto-collapses while you read so the room stays calm.
 - **Real reading typography** — serif body, ~64ch measure, generous leading, warm dark or paper light.
 - **CLI too** — search, fetch, and bulk-grab from the terminal.
