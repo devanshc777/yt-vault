@@ -5,7 +5,7 @@ const $ = (s) => document.querySelector(s);
 const root = document.documentElement;
 const saved = localStorage.getItem("ytv-theme");
 if (saved) root.dataset.theme = saved;
-$("#themeToggle").addEventListener("click", () => {
+$("#themeToggle")?.addEventListener("click", () => {
   const next = root.dataset.theme === "light" ? "dark" : "light";
   root.dataset.theme = next;
   localStorage.setItem("ytv-theme", next);

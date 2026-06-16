@@ -19,7 +19,15 @@ library/INDEX.md
 .DS_Store
 Thumbs.db
 
-# user-supplied media (keep folders, not contents)
+# media: ship curated CC0 defaults, ignore everything else users drop in
 web/rooms/*
 !web/rooms/.gitkeep
+!web/rooms/library.jpg
+!web/rooms/cafe.jpg
+!web/rooms/rain.jpg
+!web/rooms/lofi.jpg
+!web/rooms/garden.jpg
+!web/rooms/dusk.jpg
+!web/rooms/paper.jpg
 web/assets/orb.*
+!web/assets/orb.jpg

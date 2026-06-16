@@ -27,10 +27,24 @@ body.noir {
 .orb { position: relative; width: min(42vw, 460px); aspect-ratio: 1; justify-self: center; }
 @media (max-width: 900px) { .orb { width: min(72vw, 340px); } }
 
-/* drop a generated image at web/assets/orb.(png|webp|jpg) → it replaces the CSS orb */
-.orb-img { position: absolute; inset: -6%; width: 112%; height: 112%; object-fit: contain; opacity: 0; transition: opacity 0.8s var(--ease); filter: drop-shadow(0 0 60px oklch(0.7 0.12 280 / 0.4)); }
+/* drop an image at web/assets/orb.(png|webp|jpg) → masked into a sphere,
+   kept inside the orbiting dash-rings + bloom (only the faceted gem is dropped) */
+.orb-img {
+  position: absolute; inset: 21%; width: 58%; height: 58%;
+  object-fit: cover; border-radius: 50%; opacity: 0;
+  transition: opacity 0.9s var(--ease);
+  box-shadow:
+    inset 16px 16px 44px oklch(1 0 0 / 0.22),
+    inset -22px -26px 66px oklch(0 0 0 / 0.72),
+    0 0 70px -6px oklch(0.7 0.13 285 / 0.55);
+  animation: orbturn 90s linear infinite;
+}
 .orb.has-img .orb-img { opacity: 1; }
-.orb.has-img .ring, .orb.has-img .ring-2, .orb.has-img .hex, .orb.has-img .orb-glow { display: none; }
+/* keep .ring, .ring-2 and .orb-glow; only the faceted gem is replaced */
+.orb.has-img .hex { display: none; }
+.orb.has-img .orb-glow { inset: 16%; opacity: 0.5; filter: blur(54px); }
+
+@keyframes orbturn { to { transform: rotate(360deg); } }
 
 .orb-glow { position: absolute; inset: 8%; border-radius: 50%; filter: blur(46px); opacity: 0.6;
   background: conic-gradient(from 0deg, #7df9ff, #c39bff, #ff9bd4, #ffe79b, #9bffc0, #7df9ff);
@@ -111,5 +125,5 @@ body.noir {
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .orb-glow, .hex, .ring, .ring-2 { animation: none !important; }
+  .orb-glow, .hex, .ring, .ring-2, .orb-img { animation: none !important; }
 }

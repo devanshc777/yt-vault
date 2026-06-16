@@ -102,7 +102,15 @@ Poly Haven [iridescent / lapa materials](https://polyhaven.com/textures).
 
 ---
 
-## After you generate
+## Bundled defaults
 
-Drop the files in the paths above and reload. If you'd rather I wire a **video** hero or add more
-room slots, or retune the orb's glow color to match a room, just say so.
+The repo ships with curated **free photos from [Unsplash](https://unsplash.com)** so it looks good on
+first run — 7 rooms + an iridescent macro for the landing hero (the orb texture is masked into a sphere
+in CSS, kept inside the orbiting dash-ring). The [Unsplash License](https://unsplash.com/license) permits
+bundling in a free app. To make a room yours, overwrite the file at `web/rooms/<id>.jpg`
+(or `web/assets/orb.png`) and reload — your file wins. Anything else you drop in is gitignored.
+
+## After you generate / replace
+
+Drop the files in the paths above and reload. If you'd rather wire a **video** hero, add more
+room slots, or retune the orb's glow color to match a room, open an issue.
