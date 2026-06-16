@@ -1,3 +1,6 @@
+# local design scope / spec (internal, not shipped)
+/CLAUDE.md
+
 # Python-generated files
 __pycache__/
 *.py[oc]
@@ -30,4 +33,4 @@ web/rooms/*
 !web/rooms/dusk.jpg
 !web/rooms/paper.jpg
 web/assets/orb.*
-!web/assets/orb.jpg
+!web/assets/orb.webp

@@ -104,11 +104,18 @@ Poly Haven [iridescent / lapa materials](https://polyhaven.com/textures).
 
 ## Bundled defaults
 
-The repo ships with curated **free photos from [Unsplash](https://unsplash.com)** so it looks good on
-first run — 7 rooms + an iridescent macro for the landing hero (the orb texture is masked into a sphere
-in CSS, kept inside the orbiting dash-ring). The [Unsplash License](https://unsplash.com/license) permits
-bundling in a free app. To make a room yours, overwrite the file at `web/rooms/<id>.jpg`
-(or `web/assets/orb.png`) and reload — your file wins. Anything else you drop in is gitignored.
+The repo ships with curated defaults so it looks complete on first run: 7 reading-room photos
+(**[Unsplash](https://unsplash.com)**-licensed — the [license](https://unsplash.com/license) permits
+bundling in a free app) and an **iridescent hexagon gem** for the landing hero.
+
+The hero gem is composited live: `mix-blend-mode: screen` drops its black background onto our
+near-black stage, a radial **mask** fades the square frame to a clean disc (no box edge), and it gets
+a pointer/touch **parallax tilt** plus idle float + glow-breathe. The art carries its own dash-ring
+and sparkle, so the CSS orb falls away when an image is present. Export new gem art on **pure #000**
+(or transparent) so the screen-blend stays clean.
+
+To make any of it yours, overwrite the file at `web/rooms/<id>.jpg` (or `web/assets/orb.png` /
+`.webp`) and reload — your file wins. Anything else you drop in is gitignored.
 
 ## After you generate / replace
 

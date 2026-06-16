@@ -50,6 +50,32 @@ function showResult(d) {
   next();
 })();
 
+/* parallax tilt: the gem leans toward the pointer / touch across the hero */
+(function orbTilt() {
+  const orb = $("#orb"), img = $("#orbImg");
+  if (!orb || !img) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const MAX = 13; // degrees
+  const zone = document.querySelector(".stagewrap") || orb;
+  let raf = 0;
+  const move = (e) => {
+    const p = e.touches ? e.touches[0] : e;
+    const r = orb.getBoundingClientRect();
+    const x = (p.clientX - r.left) / r.width - 0.5;   // -0.5 … 0.5
+    const y = (p.clientY - r.top) / r.height - 0.5;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      img.style.setProperty("--rx", (x * MAX).toFixed(2) + "deg");
+      img.style.setProperty("--ry", (-y * MAX).toFixed(2) + "deg");
+    });
+  };
+  const reset = () => { img.style.setProperty("--rx", "0deg"); img.style.setProperty("--ry", "0deg"); };
+  zone.addEventListener("pointermove", move);
+  zone.addEventListener("pointerleave", reset);
+  zone.addEventListener("touchmove", move, { passive: true });
+  zone.addEventListener("touchend", reset);
+})();
+
 $("#fetchForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const url = $("#urlInput").value.trim(); if (!url) return;

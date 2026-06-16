@@ -9,7 +9,7 @@ body.noir {
     oklch(0.11 0.004 260);
   color: oklch(0.93 0 0);
 }
-.noir .topbar { background: transparent; backdrop-filter: none; border-bottom: 1px solid oklch(1 0 0 / 0.07); }
+.noir .topbar { background: oklch(0.10 0.004 260 / 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid oklch(1 0 0 / 0.07); }
 .noir .nav-link { color: oklch(0.62 0 0); }
 .noir .nav-link:hover, .noir .nav-link[aria-current="page"] { color: oklch(0.96 0 0); }
 .noir .nav-link[aria-current="page"]::after { background: oklch(0.96 0 0); }
@@ -24,27 +24,41 @@ body.noir {
 @media (max-width: 900px) { .stagewrap { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 2.5rem; } }
 
 /* ---------- iridescent orb ---------- */
-.orb { position: relative; width: min(42vw, 460px); aspect-ratio: 1; justify-self: center; }
-@media (max-width: 900px) { .orb { width: min(72vw, 340px); } }
+.orb { position: relative; width: min(42vw, 460px); aspect-ratio: 1; justify-self: center; perspective: 900px; }
+@media (max-width: 900px) { .orb { width: min(62vw, 290px); margin-top: 1rem; } }
 
-/* drop an image at web/assets/orb.(png|webp|jpg) → masked into a sphere,
-   kept inside the orbiting dash-rings + bloom (only the faceted gem is dropped) */
+/* drop an image at web/assets/orb.(png|webp|jpg) → it becomes the hero gem.
+   The art already carries its own dash-ring + sparkle + glow, so the CSS orb
+   parts are hidden. mix-blend:screen drops the black background, leaving only
+   the luminous gem composited on our near-black stage. Pointer/touch sets
+   --rx/--ry for a parallax tilt; float + breathe run on their own. */
 .orb-img {
-  position: absolute; inset: 21%; width: 58%; height: 58%;
-  object-fit: cover; border-radius: 50%; opacity: 0;
-  transition: opacity 0.9s var(--ease);
-  box-shadow:
-    inset 16px 16px 44px oklch(1 0 0 / 0.22),
-    inset -22px -26px 66px oklch(0 0 0 / 0.72),
-    0 0 70px -6px oklch(0.7 0.13 285 / 0.55);
-  animation: orbturn 90s linear infinite;
+  position: absolute; inset: -4%; width: 108%; height: 108%;
+  object-fit: contain; opacity: 0;
+  mix-blend-mode: screen;
+  /* fade the art's square black backdrop to a disc so no box edge shows
+     (gem + dash-ring sit well inside ~0.5 radius) */
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 60%, transparent 78%);
+          mask: radial-gradient(circle at 50% 50%, #000 60%, transparent 78%);
+  --rx: 0deg; --ry: 0deg;
+  transform: rotateY(var(--rx)) rotateX(var(--ry));
+  transition: opacity 0.9s var(--ease), transform 0.45s var(--ease);
+  filter: drop-shadow(0 0 50px oklch(0.7 0.14 290 / 0.5));
+  animation: orbfloat 9s ease-in-out infinite, orbbreathe 6.5s ease-in-out infinite;
+  will-change: transform, translate, filter;
 }
 .orb.has-img .orb-img { opacity: 1; }
-/* keep .ring, .ring-2 and .orb-glow; only the faceted gem is replaced */
-.orb.has-img .hex { display: none; }
-.orb.has-img .orb-glow { inset: 16%; opacity: 0.5; filter: blur(54px); }
+/* the gem art replaces every CSS orb part */
+.orb.has-img .ring,
+.orb.has-img .ring-2,
+.orb.has-img .hex,
+.orb.has-img .orb-glow { display: none; }
 
-@keyframes orbturn { to { transform: rotate(360deg); } }
+@keyframes orbfloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2.4%; } }
+@keyframes orbbreathe {
+  0%, 100% { filter: drop-shadow(0 0 44px oklch(0.7 0.14 290 / 0.42)); }
+  50%      { filter: drop-shadow(0 0 74px oklch(0.78 0.16 300 / 0.62)); }
+}
 
 .orb-glow { position: absolute; inset: 8%; border-radius: 50%; filter: blur(46px); opacity: 0.6;
   background: conic-gradient(from 0deg, #7df9ff, #c39bff, #ff9bd4, #ffe79b, #9bffc0, #7df9ff);
@@ -126,4 +140,5 @@ body.noir {
 
 @media (prefers-reduced-motion: reduce) {
   .orb-glow, .hex, .ring, .ring-2, .orb-img { animation: none !important; }
+  .orb-img { transform: none !important; translate: none !important; }
 }
