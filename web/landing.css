@@ -1,0 +1,92 @@
+/* ============================================================
+   landing — flowy, animated, premium dark
+   ============================================================ */
+
+.ghost-btn {
+  font-family: var(--font-ui); font-size: 0.9rem; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 0.82rem 1.2rem; cursor: pointer; display: inline-flex; align-items: center;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.ghost-btn:hover { border-color: var(--accent); color: var(--ink); }
+.ghost-btn:active { transform: translateY(1px); }
+
+/* drifting aurora orbs */
+.aurora { position: fixed; inset: 0; z-index: var(--z-bg); overflow: hidden; pointer-events: none; }
+.aurora span {
+  position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5;
+  background: radial-gradient(circle, var(--accent), transparent 70%);
+}
+.aurora span:nth-child(1) { width: 46vw; height: 46vw; top: -14vw; left: 50%; transform: translateX(-50%); opacity: 0.32; animation: drift1 22s var(--ease) infinite alternate; }
+.aurora span:nth-child(2) { width: 30vw; height: 30vw; bottom: -8vw; left: -6vw; background: radial-gradient(circle, var(--accent-2), transparent 70%); opacity: 0.22; animation: drift2 26s var(--ease) infinite alternate; }
+.aurora span:nth-child(3) { width: 24vw; height: 24vw; top: 30%; right: -6vw; opacity: 0.16; animation: drift3 30s var(--ease) infinite alternate; }
+@keyframes drift1 { to { transform: translateX(-58%) translateY(4vw); } }
+@keyframes drift2 { to { transform: translate(5vw, -4vw); } }
+@keyframes drift3 { to { transform: translate(-4vw, 5vw); } }
+[data-theme="light"] .aurora span { opacity: 0.14; }
+
+main { position: relative; z-index: var(--z-base); max-width: 1080px; margin: 0 auto; padding: clamp(2.6rem, 8vw, 6rem) clamp(1.1rem, 4vw, 2.6rem) 3rem; }
+
+/* hero */
+.hero { max-width: 42rem; }
+.hero-eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--accent); margin-bottom: 1.2rem; opacity: 0; animation: rise 0.6s var(--ease) 0.05s both; }
+.hero-title {
+  font-family: var(--font-read); font-weight: 600; line-height: 1.06; letter-spacing: -0.022em;
+  font-size: clamp(2.4rem, 6.5vw, 4rem); text-wrap: balance; opacity: 0; animation: rise 0.7s var(--ease) 0.12s both;
+}
+.hero-title em { font-style: italic; color: var(--accent); padding-right: 0.06em; }
+.hero-sub { margin-top: 1.2rem; color: var(--ink-2); font-size: 1.1rem; max-width: 44ch; text-wrap: pretty; opacity: 0; animation: rise 0.7s var(--ease) 0.2s both; }
+
+.hero-form { margin-top: 2rem; display: flex; gap: 0.6rem; flex-wrap: wrap; opacity: 0; animation: rise 0.7s var(--ease) 0.28s both; }
+.field { flex: 1 1 24rem; min-width: 0; position: relative; }
+#urlInput {
+  width: 100%; font-family: var(--font-mono); font-size: 0.95rem; color: var(--ink);
+  background: color-mix(in oklch, var(--bg-2) 80%, transparent); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 0.95rem 1.1rem; backdrop-filter: blur(8px);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+#urlInput::placeholder { color: var(--muted); }
+#urlInput:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent) 22%, transparent); }
+
+.status { margin-top: 1rem; font-size: 0.88rem; min-height: 1.2em; color: var(--muted); }
+.status.error { color: var(--danger); } .status.ok { color: var(--accent); }
+
+/* result card */
+.result { margin-top: 2.4rem; }
+.result-card {
+  background: color-mix(in oklch, var(--bg-2) 86%, transparent); border: 1px solid var(--line-2);
+  border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1.4rem, 4vw, 2.2rem);
+  backdrop-filter: blur(10px); animation: rise 0.6s var(--ease) both;
+}
+.result-kicker { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.result-title { font-family: var(--font-read); font-weight: 600; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.18; margin-top: 0.5rem; text-wrap: balance; }
+.result-meta { font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; }
+.result-preview {
+  margin: 1.2rem 0; font-family: var(--font-read); font-size: 1.04rem; line-height: 1.7; color: var(--ink-2);
+  max-height: 9.5rem; overflow: hidden; position: relative; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent);
+          mask-image: linear-gradient(180deg, #000 55%, transparent);
+}
+.result-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+/* flow */
+.flow { margin-top: clamp(3.5rem, 9vw, 6rem); }
+.flow-track { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 3vw, 2.2rem); position: relative; }
+.flow-track::before { content: ""; position: absolute; top: 18px; left: 8%; right: 8%; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); }
+@media (max-width: 720px) { .flow-track { grid-template-columns: 1fr; gap: 1.4rem; } .flow-track::before { display: none; } }
+.flow-track li { position: relative; }
+.flow-n {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--line); color: var(--accent);
+  font-family: var(--font-mono); font-size: 0.9rem; position: relative; z-index: 1; margin-bottom: 0.9rem;
+}
+.flow-track h3 { font-size: 1.02rem; font-weight: 600; }
+.flow-track p { color: var(--muted); font-size: 0.92rem; margin-top: 0.3rem; max-width: 26ch; }
+
+.foot {
+  position: relative; z-index: var(--z-base); max-width: 1080px; margin: 0 auto;
+  padding: 2rem clamp(1.1rem, 4vw, 2.6rem) 3rem; display: flex; justify-content: space-between;
+  align-items: center; gap: 1rem; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem;
+  border-top: 1px solid var(--line-2);
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }

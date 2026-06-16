@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -78,6 +78,11 @@ def index():
     return (WEB / "index.html").read_text(encoding="utf-8")
 
 
+@app.get("/read", response_class=HTMLResponse)
+def read_room():
+    return (WEB / "read.html").read_text(encoding="utf-8")
+
+
 @app.get("/api/library")
 def library():
     items = []
@@ -99,6 +104,18 @@ def note(file: str):
     if LIB.resolve() not in p.parents or not p.exists() or p.suffix != ".md":
         raise HTTPException(404, "note not found")
     return parse_note(p)
+
+
+@app.get("/api/download/{file}")
+def download(file: str):
+    p = (LIB / file).resolve()
+    if LIB.resolve() not in p.parents or not p.exists() or p.suffix != ".md":
+        raise HTTPException(404, "note not found")
+    return Response(
+        p.read_text(encoding="utf-8"),
+        media_type="text/markdown; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{file}"'},
+    )
 
 
 @app.post("/api/fetch")

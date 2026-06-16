@@ -1,121 +1,130 @@
+<div align="center">
+
 # yt-vault
 
-Turn any YouTube link into a clean transcript you can actually read, and that you can hand
-straight to an AI. A small CLI plus a warm reading-room web app. Built on `yt-dlp`.
-Public data only (metadata + captions), no login, no personal data.
+**Turn any YouTube link into a clean transcript you can actually read — and hand straight to an AI.**
 
-![dark reading room](docs/preview-dark.png)
+A tiny self-hosted tool: paste a link, get a markdown transcript, then read it in a cozy,
+customizable reading room with scenes and focus widgets. Runs entirely on your own machine.
+
+![License: MIT](https://img.shields.io/badge/license-MIT-bl%23e0a05a)
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)
+![Built with FastAPI](https://img.shields.io/badge/api-FastAPI-009688)
+![No tracking](https://img.shields.io/badge/data-local%20only-2e7d32)
+
+![Landing](docs/preview-landing.png)
+![Reading room](docs/preview-read.png)
+
+</div>
 
 ---
 
-## What it does
+## Why
 
-- **Fetch** a video by URL or id → metadata + transcript, written as one markdown note per video.
-- **Read** everything in a calm reading room: serif body, comfortable measure, warm dark or paper light.
-- **Plug into AI**: one click copies a title + channel + transcript block ready to paste into a model.
+YouTube hides a lot of good thinking inside videos you don't have 40 minutes for. yt-vault pulls
+the transcript and metadata, saves it as a plain markdown file in a folder you own, and gives you
+two calm places to use it: a clean **getter** and a **reading room** you can make your own.
 
-Notes are plain markdown with YAML frontmatter, so they drop straight into Obsidian / any vault.
+- **Yours.** Runs on `127.0.0.1`. No accounts, no tracking, public data only (metadata + captions).
+- **Portable.** Every video becomes a markdown file with YAML frontmatter, so it drops into Obsidian or any vault.
+- **AI-ready.** One click copies a title + channel + transcript block to paste into any model.
 
----
+## Features
 
-## Install
+- **Two pages, one job each** — a focused link-to-transcript getter, and a separate reading room.
+- **Reading room scenes** — Lamplit, Paper, Rain, Library, Dusk, Forest, or **Blank** (upload your own background). Inspired by virtual study spaces like LifeAt.
+- **Focus widgets** (draggable, toggle on/off, remembered): a **clock** with timezone picker, a **pomodoro timer**, and a **life / year progress** meter.
+- **Real reading typography** — serif body, ~64ch measure, generous leading, warm dark or paper light.
+- **CLI too** — search, fetch, and bulk-grab from the terminal.
 
-Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+## Run it on your own machine
+
+**Prerequisites:** [Python 3.12+](https://www.python.org/) and [uv](https://docs.astral.sh/uv/).
 
 ```bash
+git clone https://github.com/Reckon-IT/yt-vault.git   # or your fork
 cd yt-vault
-uv sync          # installs all dependencies from pyproject.toml / uv.lock
+uv sync                 # installs everything from uv.lock
+uv run python server.py # → http://127.0.0.1:8765
 ```
 
-Dependencies (managed in `pyproject.toml`):
+Open the link, paste a YouTube URL, hit **Get transcript**, then click **Open in reading room**.
+That's it. Everything you fetch is saved under `library/` as markdown.
 
-| Package | Why |
+## The reading room
+
+| Control | What it does |
 |---|---|
-| `yt-dlp` | search, metadata, caption download |
-| `requests` | transport |
-| `fastapi` | web API |
-| `uvicorn` | ASGI server |
+| **Scenes** (palette icon) | Switch the room's mood, or upload your own background under **Blank**. |
+| **Transcripts** (book icon) | Open the shelf to pick what to read. |
+| **Clock** | Live time; pick a timezone or use this device's. |
+| **Timer** | Pomodoro focus / break. Drag it anywhere. |
+| **Life** | Set your birth date to see the year and your life as progress bars. |
+| **Theme dot** (top right) | Toggle warm-dark / paper. |
 
----
+Widgets are draggable and their position, your scene, and your settings persist in the browser.
 
-## Run the web app
-
-```bash
-uv run python server.py
-# → http://127.0.0.1:8765
-```
-
-Paste a YouTube URL, hit **Get transcript**, read it. Saved transcripts appear in the
-reading room on the left. Toggle dark / paper with the dot in the top-right.
-
-## Use the CLI
+## CLI
 
 ```bash
-uv run python yt.py search "indian incense market" -n 10   # list results
-uv run python yt.py get https://youtu.be/VIDEO_ID          # one video → note
-uv run python yt.py grab "agarbatti business" -n 5         # search + fetch top N
-uv run python yt.py index                                  # rebuild INDEX.md
+uv run python yt.py search "topic" -n 10      # list results
+uv run python yt.py get <url|id>              # one video → note
+uv run python yt.py grab "topic" -n 5         # search + fetch top N
+uv run python yt.py index                     # rebuild library/INDEX.md
 ```
 
----
+## Configuration
 
-## Where notes live
-
-Default: `./library/` (a self-contained store) plus `INDEX.md`. Point it anywhere:
-
-```bash
-uv run python yt.py --out "C:\Personal\Aethion\_raw\youtube" grab "..." -n 5
-# or set once for both CLI and server:
-set YT_VAULT_DIR=C:\Personal\Aethion\_raw\youtube
-```
+| Setting | How |
+|---|---|
+| Where notes are saved | `--out <dir>` (CLI) or `YT_VAULT_DIR=<dir>` env (CLI + server). Default `./library`. Point it at e.g. an Obsidian vault. |
+| Browser cookies (for transcripts) | `--cookies-from-browser firefox` or `YT_VAULT_COOKIES=firefox`. |
+| Server port | edit the bottom of `server.py` (default `8765`). |
 
 `library/` contents are gitignored (your data); the folder is kept via `.gitkeep`.
 
----
-
 ## Transcripts and the 429 wall
 
-Transcripts use yt-dlp's own caption downloader (json3), which adds the params YouTube now
-requires. YouTube rate-limits caption fetches per IP, so heavy bursts can return `HTTP 429`.
-Built-in mitigations: retries, request pacing (`grab --sleep`), the `android` player client,
-and partial-download tolerance (a 429 on a secondary language never discards the English one
-that already downloaded). If you still hit 429:
-
-- wait for the IP cooldown, or
-- pass browser cookies: `--cookies-from-browser firefox` (Firefox is most reliable; recent
-  Chrome builds fail with a DPAPI decrypt error), or set `YT_VAULT_COOKIES=firefox`.
-
-Metadata and the note always save; only the transcript field needs the caption endpoint.
-
----
-
-## Design
-
-Warm, low-glare reading surface ("evening lamp" dark by default, "paper" light on toggle).
-One ember accent, used sparingly. Three type roles: a serif for the transcript body (long-form
-legibility), a system sans for UI chrome, a mono for metadata. Reading column capped near 66ch
-with generous leading. Motion is restrained and respects `prefers-reduced-motion`. OKLCH tokens
-in `web/style.css`.
+Transcripts use yt-dlp's own caption downloader (json3). YouTube rate-limits caption fetches per
+IP, so heavy bursts can return `HTTP 429`. Mitigations are built in (retries, request pacing,
+`grab --sleep`, the `android` player client, and partial-download tolerance so a 429 on a
+secondary language never discards the English one that already landed). If you still hit 429,
+wait for the cooldown or pass `--cookies-from-browser firefox` (Firefox is most reliable; recent
+Chrome builds fail with a DPAPI decrypt error). Metadata and the note always save regardless.
 
 ## Project layout
 
 ```
 yt-vault/
-├── yt.py            # CLI: search / get / grab / index
+├── yt.py            # CLI: search / get / grab / index (yt-dlp)
 ├── server.py        # FastAPI app + JSON API
 ├── web/
-│   ├── index.html   # app shell
-│   ├── style.css    # tokens + reading-room styling
-│   └── app.js       # fetch, render, theme, copy-for-AI
-├── library/         # generated notes (gitignored, .gitkeep tracked)
-├── pyproject.toml
-└── uv.lock
+│   ├── base.css     # shared tokens + chrome
+│   ├── index.html / landing.css / landing.js   # the transcript getter
+│   └── read.html  / read.css   / read.js        # the reading room
+├── library/         # your notes (gitignored, .gitkeep tracked)
+├── docs/            # screenshots
+├── pyproject.toml / uv.lock
+└── LICENSE
 ```
 
 ## API
 
 | Method | Route | Returns |
 |---|---|---|
-| GET | `/api/library` | saved transcripts (metadata) |
-| GET | `/api/note/{file}` | one transcript (full) |
-| POST | `/api/fetch` `{url}` | fetch a video, save its note, return it |
+| `GET` | `/api/library` | saved transcripts (metadata) |
+| `GET` | `/api/note/{file}` | one transcript (full) |
+| `GET` | `/api/download/{file}` | the raw `.md` as a download |
+| `POST` | `/api/fetch` `{url}` | fetch a video, save its note, return it |
+
+## Contributing
+
+Issues and PRs welcome. Keep the frontend dependency-free (vanilla HTML/CSS/JS), respect
+`prefers-reduced-motion`, and run a video through both pages before opening a PR. New reading-room
+scenes are a great first contribution: add a `[data-scene="…"]` block in `web/read.css` and an
+entry to the `SCENES` list in `web/read.js`.
+
+## License
+
+[MIT](LICENSE) © 2026 Devansh Chowdhary. Built on [yt-dlp](https://github.com/yt-dlp/yt-dlp).
+Respect YouTube's Terms of Service; this tool handles public data for personal use.
