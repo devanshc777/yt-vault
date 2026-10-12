@@ -40,6 +40,15 @@ uv run python yt.py index                    # rebuild library/INDEX.md
 - Save somewhere specific (e.g. an Obsidian vault): `--out "<dir>"` or `YT_VAULT_DIR=<dir>`.
 - Rate-limit wall (`HTTP 429`): YouTube throttles caption fetches per IP. Use the cookies flag above
   and/or wait for the cooldown. Firefox is most reliable; recent Chrome builds fail with a DPAPI error.
+  **Named failure: "fight the 429."** Symptom: `transcript: none` + 429 on `en`, repeating across retries.
+  Wrong instinct: retry, update yt-dlp, or download audio for Whisper. On 2026-10-12 all failed (no Firefox
+  on this box; audio 403 even on latest yt-dlp; 30s-spaced retries still 429'd). Correct move: open the video
+  in the built-in browser, hook the page's XHR/fetch for `timedtext` + `lang=en`, toggle the player's caption
+  module off/on (`movie_player.unloadModule/loadModule('captions')`, `setOption('captions','track',{languageCode:'en',kind:'asr'})`),
+  parse the captured `json3` (`events[].segs[].utf8`). Worked for 2/2 videos, measured.
+  **Check the capture is the video, not an ad.** A pre-roll ad serves its own captions: 2026-10-12 a 668s video
+  returned 261 words of a workshop ad, plausible on its face. Compare words to `movie_player.getDuration()`
+  (speech runs ~2 words/s) and check `.ad-showing` is absent before trusting it.
 - The note (metadata) saves even when captions aren't available — check the printed result.
 
 ## Notes
